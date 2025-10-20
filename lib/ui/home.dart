@@ -1,3 +1,4 @@
+import 'package:capstone/ui/widget/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone/ui/widget/category_item.dart';
 import 'package:capstone/data/product_data.dart';
@@ -58,7 +59,6 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 20),
-
 
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -123,6 +123,19 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+      ),
+
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 0, 
+        onTap: (index) {
+          if (index == 0) return; 
+          if (index == 1) {
+            Navigator.pushReplacementNamed(context, '/cek_kombinasi');
+          }
+          if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/profile');
+          }
+        },
       ),
     );
   }
