@@ -1,6 +1,7 @@
 import 'package:capstone/ui/forgot_pw.dart';
 import 'package:capstone/ui/home.dart';
 import 'package:capstone/ui/login.dart';
+import 'package:capstone/ui/profile.dart';
 import 'package:capstone/ui/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const RegisterPage(),
         '/forgotpw': (context) => const ForgotPassword(),
         '/home': (context) => const Home(),
+        '/profile': (_) => const Profile(),
       },
       theme: ThemeData(
         textTheme: GoogleFonts.plusJakartaSansTextTheme(),
