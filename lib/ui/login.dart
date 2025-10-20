@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back, color: Colors.grey),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
         ),
       ),
       body: SafeArea(
@@ -79,7 +79,9 @@ class _LoginState extends State<Login> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/forgotpw');
+                          },
                           child: const Text(
                             'Forgot password?',
                             style: TextStyle(

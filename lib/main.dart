@@ -1,3 +1,4 @@
+import 'package:capstone/ui/forgot_pw.dart';
 import 'package:capstone/ui/login.dart';
 import 'package:capstone/ui/signup.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Login(),
         '/signup': (context) => const RegisterPage(),
+        '/forgotpw': (context) => const ForgotPassword(),
       },
       theme: ThemeData(
         textTheme: GoogleFonts.plusJakartaSansTextTheme(),
