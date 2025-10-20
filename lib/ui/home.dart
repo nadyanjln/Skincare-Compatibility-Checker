@@ -43,12 +43,21 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔍 Search bar
+              // Search bar
               TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search',
                   prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.camera_alt),
+                    onPressed: () {
+                      // TODO: Add your camera action here
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Camera clicked')),
+                      );
+                    },
+                  ),
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -58,6 +67,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
 
               SingleChildScrollView(
@@ -126,9 +136,9 @@ class _HomeState extends State<Home> {
       ),
 
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 0, 
+        currentIndex: 0,
         onTap: (index) {
-          if (index == 0) return; 
+          if (index == 0) return;
           if (index == 1) {
             Navigator.pushReplacementNamed(context, '/cek_kombinasi');
           }
