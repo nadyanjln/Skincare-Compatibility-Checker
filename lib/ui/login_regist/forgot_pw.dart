@@ -1,5 +1,5 @@
-import 'package:capstone/ui/widget/custom_textfield.dart';
-import 'package:capstone/ui/widget/password_textfield.dart';
+import 'package:capstone/ui/login_regist/widget/custom_textfield.dart';
+import 'package:capstone/ui/login_regist/widget/password_textfield.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {

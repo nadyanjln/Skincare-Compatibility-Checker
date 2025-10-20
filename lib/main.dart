@@ -1,7 +1,8 @@
-import 'package:capstone/ui/forgot_pw.dart';
-import 'package:capstone/ui/home.dart';
-import 'package:capstone/ui/login.dart';
-import 'package:capstone/ui/signup.dart';
+import 'package:capstone/ui/detail_product/detail_product_screen.dart';
+import 'package:capstone/ui/login_regist/forgot_pw.dart';
+import 'package:capstone/ui/home/home.dart';
+import 'package:capstone/ui/login_regist/login.dart';
+import 'package:capstone/ui/login_regist/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const RegisterPage(),
         '/forgotpw': (context) => const ForgotPassword(),
         '/home': (context) => const Home(),
+        '/product_detail': (context) => const ProductDetailPage(),
       },
       theme: ThemeData(
         textTheme: GoogleFonts.plusJakartaSansTextTheme(),
