@@ -14,11 +14,38 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Dummy credentials
+  final String dummyEmail = "user@gmail.com";
+  final String dummyPassword = "password123";
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _login() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email == dummyEmail && password == dummyPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Login successful!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.pushNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid email or password."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -49,11 +76,12 @@ class _LoginState extends State<Login> {
                         'Sign In',
                         style: TextStyle(
                           fontSize: 28,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 24),
 
+                      // EMAIL
                       CustomTextField(
                         label: 'Email address',
                         hintText: 'helloworld@gmail.com',
@@ -64,6 +92,7 @@ class _LoginState extends State<Login> {
 
                       const SizedBox(height: 20),
 
+                      // PASSWORD
                       PasswordTextField(
                         label: 'Password',
                         hintText: 'At least 8 characters',
@@ -94,8 +123,9 @@ class _LoginState extends State<Login> {
 
                       const SizedBox(height: 16),
 
+                      // LOGIN BUTTON
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff007BFF),
                           minimumSize: const Size.fromHeight(50),

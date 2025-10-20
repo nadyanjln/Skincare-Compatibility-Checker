@@ -37,24 +37,23 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // ===== BAGIAN ATAS SCROLLABLE =====
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ===== TITLE =====
+                    // TITLE 
                     const Text(
                       'Create account',
                       style: TextStyle(
                         fontSize: 28,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 24),
 
-                    // ===== EMAIL =====
+                    // EMAIL
                     CustomTextField(
                       label: 'Email',
                       hintText: 'helloworld@gmail.com',
@@ -65,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 20),
 
-                    // ===== PASSWORD =====
+                    // PASSWORD
                     PasswordTextField(
                       label: 'Password',
                       hintText: 'At least 8 characters',
@@ -80,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 20),
 
-                    // ===== CONFIRM PASSWORD =====
+                    // CONFIRM PASSWORD
                     PasswordTextField(
                       label: 'Confirm Password',
                       hintText: 'At least 8 characters',
@@ -95,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 8),
 
-                    // ===== ERROR PASSWORD TIDAK SAMA =====
+                    //  ERROR PASSWORD TIDAK SAMA
                     if (!passwordsMatch && _confirmController.text.isNotEmpty)
                       const Text(
                         "Passwords do not match",
@@ -104,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 16),
 
-                    // ===== ACCEPT TERMS =====
+                    // ACCEPT TERMS
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -119,7 +118,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           activeColor: Colors.black,
                         ),
                         const SizedBox(width: 4),
-                        // Geser teks sedikit ke kiri agar sejajar dengan checkbox
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10),
@@ -137,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 24),
 
-                    // ===== SIGN UP BUTTON =====
+                    // SIGN UP BUTTON
                     ElevatedButton(
                       onPressed: _isAccepted && passwordsMatch
                           ? () {
@@ -168,7 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
 
-            // ===== ALREADY HAVE ACCOUNT =====
+            // ALREADY HAVE ACCOUNT 
             Padding(
               padding: const EdgeInsets.only(bottom: 24),
               child: Row(

@@ -72,7 +72,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       'Reset password',
                       style: TextStyle(
                         fontSize: 28,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 8),
