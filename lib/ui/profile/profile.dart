@@ -4,7 +4,6 @@ import 'package:capstone/style/skincare_text_style.dart';
 import 'package:capstone/ui/profile/widget/expanded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../bottom_navbar.dart';
 
 class Profile extends StatelessWidget {
@@ -12,6 +11,8 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffF9FAFB),
       body: SafeArea(
@@ -22,39 +23,33 @@ class Profile extends StatelessWidget {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 16.0,
+                    vertical: 16,
+                    horizontal: 16,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Teks Full Name dan Address di kiri
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Full Name",
+                              userProvider.name ?? "Full Name",
                               style: SkincareTextStyle.headlineSmall,
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "address@domain.com",
+                              userProvider.email ?? "address@domain.com",
                               style: SkincareTextStyle.titleSmall,
                             ),
                           ],
                         ),
                       ),
-
-                      // Jarak antara teks dan tombol
                       const SizedBox(width: 8),
-
-                      // Tombol love dengan background biru dan lingkaran
                       Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff007BFF), // biru
-                          shape: BoxShape
-                              .circle, // bisa diganti BoxShape.rectangle untuk kotak
+                        decoration: const BoxDecoration(
+                          color: Color(0xff007BFF),
+                          shape: BoxShape.circle,
                         ),
                         child: IconButton(
                           onPressed: () {
@@ -71,19 +66,14 @@ class Profile extends StatelessWidget {
                   ),
                 ),
               ),
-
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                      bottom: 8,
-                      right: 16,
-                      left: 16,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      style: SkincareTextStyle.titleMedium,
                       "Profile",
+                      style: SkincareTextStyle.titleMedium,
                     ),
                   ),
                 ],
@@ -118,32 +108,21 @@ class Profile extends StatelessWidget {
                   height: 48,
                   child: OutlinedButton(
                     onPressed: () {
-                      // Akses provider
-                      final userProvider = Provider.of<UserProvider>(
-                        context,
-                        listen: false,
-                      );
                       final wishlistProvider = Provider.of<WishlistProvider>(
                         context,
                         listen: false,
                       );
-
-                      // Hapus semua data user dan wishlist
                       userProvider.logout();
                       wishlistProvider.clearWishlist();
-
-                      // Arahkan ke halaman login dan hapus semua route sebelumnya
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         '/',
                         (route) => false,
                       );
                     },
-
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xff007BFF)),
                       shape: const StadiumBorder(),
-                      backgroundColor: const Color(0xFFF9FAFB),
                     ),
                     child: Text(
                       "Logout",
@@ -162,13 +141,9 @@ class Profile extends StatelessWidget {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 2,
         onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/home');
-          }
-          if (index == 1) {
+          if (index == 0) Navigator.pushReplacementNamed(context, '/home');
+          if (index == 1)
             Navigator.pushReplacementNamed(context, '/cek_kombinasi');
-          }
-          if (index == 2) return;
         },
       ),
     );

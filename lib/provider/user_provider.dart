@@ -1,29 +1,30 @@
 import 'package:flutter/foundation.dart';
 
 class UserProvider extends ChangeNotifier {
-  // User data
+  // Data user
+  String? _name;
   String? _email;
   String? _userId;
   bool _isLoggedIn = false;
 
   // Getters
+  String? get name => _name;
   String? get email => _email;
   String? get userId => _userId;
   bool get isLoggedIn => _isLoggedIn;
 
-  // Dummy credentials untuk validasi
+  // Dummy credentials untuk validasi login demo
   final String _dummyEmail = "user@gmail.com";
   final String _dummyPassword = "password123";
 
   // Login method
   Future<bool> login(String email, String password) async {
     try {
-      // Simulasi API call
       await Future.delayed(const Duration(seconds: 1));
 
-      // Validasi credentials
       if (email == _dummyEmail && password == _dummyPassword) {
         _email = email;
+        _name = "User Demo";
         _userId = "user_${DateTime.now().millisecondsSinceEpoch}";
         _isLoggedIn = true;
         notifyListeners();
@@ -37,12 +38,10 @@ class UserProvider extends ChangeNotifier {
   }
 
   // Register method
-  Future<bool> register(String email, String password) async {
+  Future<bool> register(String name, String email, String password) async {
     try {
-      // Simulasi API call
       await Future.delayed(const Duration(seconds: 1));
-
-      // Simpan data user
+      _name = name;
       _email = email;
       _userId = "user_${DateTime.now().millisecondsSinceEpoch}";
       _isLoggedIn = true;
@@ -54,14 +53,10 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  // Reset password method
+  // Reset password
   Future<bool> resetPassword(String email, String newPassword) async {
     try {
-      // Simulasi API call
       await Future.delayed(const Duration(seconds: 1));
-
-      // Dalam aplikasi real, ini akan mengirim request ke backend
-      // Untuk demo, kita anggap berhasil
       return true;
     } catch (e) {
       debugPrint("Reset password error: $e");
@@ -69,21 +64,28 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  // Logout method
+  // Logout
   void logout() {
+    _name = null;
     _email = null;
     _userId = null;
     _isLoggedIn = false;
     notifyListeners();
   }
 
-  // Update user profile
-  void updateProfile(String email) {
-    _email = email;
+  // Update nama user
+  void updateName(String newName) {
+    _name = newName;
     notifyListeners();
   }
 
-  // Check if user is authenticated
+  // Update email user
+  void updateEmail(String newEmail) {
+    _email = newEmail;
+    notifyListeners();
+  }
+
+  // Cek autentikasi
   bool isAuthenticated() {
     return _isLoggedIn && _email != null;
   }
