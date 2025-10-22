@@ -72,6 +72,44 @@ class CombinationPage extends StatelessWidget {
     );
   }
 
+  void _handleCheckCombination(BuildContext context) {
+    final provider = context.read<IngredientsProvider>();
+
+    if (!provider.hasIngredients) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.info_outline, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Text('Tambahkan kandungan terlebih dahulu'),
+            ],
+          ),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // TODO: Navigate to result page or process combination
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Text('Mengecek ${provider.ingredientsCount} kandungan...'),
+          ],
+        ),
+        backgroundColor: const Color(0xff007BFF),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,20 +155,82 @@ class CombinationPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
-        child: Column(
-          children: [
-            // Input Container
-            ManualInputWidget(
-              onCameraPressed: () => _handleCameraAction(context),
-            ),
-            const SizedBox(height: 16),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+            child: Column(
+              children: [
+                // Input Container
+                ManualInputWidget(
+                  onCameraPressed: () => _handleCameraAction(context),
+                ),
+                const SizedBox(height: 16),
 
-            // List Kandungan
-            const Expanded(child: IngredientListWidget()),
-          ],
-        ),
+                // List Kandungan
+                const Expanded(child: IngredientListWidget()),
+
+                // Extra padding to prevent content from being hidden behind button
+                const SizedBox(height: 80),
+              ],
+            ),
+          ),
+
+          // Floating Check Combination Button
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 20, // Position above bottom navbar
+            child: Consumer<IngredientsProvider>(
+              builder: (context, provider, child) {
+                return AnimatedOpacity(
+                  opacity: provider.hasIngredients ? 1.0 : 0.5,
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xff007BFF).withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () => _handleCheckCombination(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff007BFF),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.analytics_outlined, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            provider.hasIngredients
+                                ? 'Check Combination (${provider.ingredientsCount})'
+                                : 'Check Combination',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 1,
