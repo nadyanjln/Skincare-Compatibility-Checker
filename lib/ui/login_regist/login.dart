@@ -233,7 +233,18 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 16),
 
                       OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "The 'Login with Google' feature will be available soon.",
+                              ),
+                              backgroundColor: Colors.blueAccent,
+                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
                         icon: Image.asset('assets/google_logo.png', height: 20),
                         label: const Text(
                           'Login with Google',
