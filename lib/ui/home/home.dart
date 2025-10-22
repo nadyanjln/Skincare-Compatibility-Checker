@@ -1,8 +1,9 @@
-import 'package:capstone/ui/widget/bottom_navbar.dart';
+import 'package:capstone/ui/bottom_navbar.dart';
 import 'package:flutter/material.dart';
-import 'package:capstone/ui/widget/category_item.dart';
+import 'package:capstone/ui/home/widget/category_item.dart';
 import 'package:capstone/data/product_data.dart';
-import 'package:capstone/ui/widget/product_card.dart';
+import 'package:capstone/data/category_data.dart'; 
+import 'package:capstone/ui/home/widget/product_card.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,15 +14,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
-
-  final List<Map<String, dynamic>> categories = [
-    {'icon': Icons.apps, 'label': 'All'},
-    {'icon': Icons.cleaning_services, 'label': 'Cleanser'},
-    {'icon': Icons.face, 'label': 'Moisturizer'},
-    {'icon': Icons.spa, 'label': 'Serum'},
-    {'icon': Icons.water_drop, 'label': 'Toner'},
-    {'icon': Icons.sunny, 'label': 'Sunscreen'},
-  ];
 
   int selectedIndex = 0;
   final Set<int> wishlist = {};
@@ -103,30 +95,39 @@ class _HomeState extends State<Home> {
                   final product = filteredProducts[index];
                   final isWishlisted = wishlist.contains(index);
 
-                  return ProductCard(
-                    image: product['image'],
-                    name: product['name'],
-                    brand: product['brand'],
-                    isWishlisted: isWishlisted,
-                    onWishlistToggle: () {
-                      setState(() {
-                        if (isWishlisted) {
-                          wishlist.remove(index);
-                        } else {
-                          wishlist.add(index);
-                        }
-                      });
-                    },
-                    onAdd: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            '${product['name']} ditambahkan ke keranjang',
-                          ),
-                          duration: const Duration(seconds: 1),
-                        ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/product_detail',
+                        arguments: product,
                       );
                     },
+                    child: ProductCard(
+                      image: product['image'],
+                      name: product['name'],
+                      brand: product['brand'],
+                      isWishlisted: isWishlisted,
+                      onWishlistToggle: () {
+                        setState(() {
+                          if (isWishlisted) {
+                            wishlist.remove(index);
+                          } else {
+                            wishlist.add(index);
+                          }
+                        });
+                      },
+                      onAdd: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              '${product['name']} ditambahkan ke keranjang',
+                            ),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
