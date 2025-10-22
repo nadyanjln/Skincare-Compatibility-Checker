@@ -1,7 +1,8 @@
 import 'package:capstone/style/skincare_text_style.dart';
-import 'package:capstone/ui/widget/bottom_navbar.dart';
-import 'package:capstone/ui/widget/expanded_button.dart';
+import 'package:capstone/ui/profile/widget/expanded_button.dart';
 import 'package:flutter/material.dart';
+
+import '../bottom_navbar.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
