@@ -1,9 +1,11 @@
 import 'package:capstone/ui/bottom_navbar.dart';
+import 'package:capstone/provider/ingredients_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone/ui/home/widget/category_item.dart';
 import 'package:capstone/data/product_data.dart';
-import 'package:capstone/data/category_data.dart'; 
+import 'package:capstone/data/category_data.dart';
 import 'package:capstone/ui/home/widget/product_card.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,9 +20,47 @@ class _HomeState extends State<Home> {
   int selectedIndex = 0;
   final Set<int> wishlist = {};
 
+  void _addToLab(BuildContext context, Map<String, dynamic> product) {
+    final provider = context.read<IngredientsProvider>();
+
+    provider.addProduct(
+      product['name'],
+      product['brand'],
+      product['image'],
+      ingredients: product['ingredients'] ?? [],
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.science, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '${product['name']} ditambahkan ke Lab',
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xff007BFF),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'Lihat',
+          textColor: Colors.white,
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/cek_kombinasi');
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 🔎 Filter produk berdasarkan kategori
+    // Filter produk berdasarkan kategori
     final filteredProducts = selectedIndex == 0
         ? products // semua produk kalau pilih "All"
         : products
@@ -117,16 +157,7 @@ class _HomeState extends State<Home> {
                           }
                         });
                       },
-                      onAdd: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '${product['name']} ditambahkan ke keranjang',
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
-                      },
+                      onAdd: () => _addToLab(context, product),
                     ),
                   );
                 },

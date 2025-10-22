@@ -21,7 +21,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 340, // ⬅️ atur tinggi card (bisa diganti sesuai kebutuhan)
+      height: 340,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -117,9 +117,9 @@ class ProductCard extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: onAdd,
-                        icon: const Icon(Icons.add, size: 18),
+                        icon: const Icon(Icons.science, size: 18),
                         label: const Text(
-                          "Add to Cart",
+                          "Add to Lab",
                           style: TextStyle(fontSize: 13),
                         ),
                         style: ElevatedButton.styleFrom(
