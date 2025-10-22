@@ -25,6 +25,46 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  Future<void> _handleRegister(BuildContext context) async {
+    final formProvider = context.read<FormValidationProvider>();
+
+    if (!formProvider.isRegisterFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please complete the form correctly"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      // Simulasi proses register (contoh: API call)
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Misalnya register berhasil
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Account created successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Setelah berhasil, pindah ke halaman login
+      Future.delayed(const Duration(milliseconds: 800), () {
+        Navigator.pushReplacementNamed(context, '/');
+      });
+    } catch (e) {
+      // Jika gagal register
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Registration failed. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +86,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TITLE
                     const Text(
                       'Create account',
                       style: TextStyle(
@@ -173,15 +212,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       builder: (context, formProvider, child) {
                         return ElevatedButton(
                           onPressed: formProvider.isRegisterFormValid
-                              ? () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Account created successfully!',
-                                      ),
-                                    ),
-                                  );
-                                }
+                              ? () => _handleRegister(context)
                               : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff007BFF),
@@ -212,7 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text("Already have an account? "),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/');
+                      Navigator.pushReplacementNamed(context, '/');
                     },
                     child: const Text(
                       'Log in',
