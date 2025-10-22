@@ -13,7 +13,7 @@ class ProductDetailPage extends StatelessWidget {
     // Extract ingredients list from product
     List<String> ingredientsList = [];
 
-    // Get from allIngredients string if available
+    // Ambil dari allIngredients string jika tersedia
     final allIngredients = product['allIngredients'] as String?;
     if (allIngredients != null && allIngredients.isNotEmpty) {
       // Split by comma and clean up
@@ -24,7 +24,7 @@ class ProductDetailPage extends StatelessWidget {
           .toList();
     }
 
-    // Or get from keyIngredients if available
+    // Atau ambil dari keyIngredients jika tersedia
     if (ingredientsList.isEmpty) {
       final keyIngredients =
           product['keyIngredients'] as List<Map<String, dynamic>>?;
@@ -38,9 +38,9 @@ class ProductDetailPage extends StatelessWidget {
     final productName = product['name'] ?? 'Unknown Product';
     final productBrand = product['brand'] ?? 'Unknown Brand';
 
-    // Check if product already exists
+    // Cek apakah produk sudah ada di Lab
     if (provider.hasProduct(productName, productBrand)) {
-      // Show info message that product already exists
+      // Tampilkan info jika produk sudah ada
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -49,7 +49,7 @@ class ProductDetailPage extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  '$productName sudah ada di Lab',
+                  '$productName is already in the Lab',
                   style: const TextStyle(fontSize: 14),
                 ),
               ),
@@ -59,7 +59,7 @@ class ProductDetailPage extends StatelessWidget {
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
           action: SnackBarAction(
-            label: 'Lihat',
+            label: 'View',
             textColor: Colors.white,
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/cek_kombinasi');
@@ -70,7 +70,7 @@ class ProductDetailPage extends StatelessWidget {
       return;
     }
 
-    // Add product to provider
+    // Tambahkan produk ke provider
     final added = provider.addProduct(
       productName,
       productBrand,
@@ -79,7 +79,7 @@ class ProductDetailPage extends StatelessWidget {
     );
 
     if (added) {
-      // Show success message with navigation option
+      // Tampilkan pesan sukses dengan opsi navigasi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -88,7 +88,7 @@ class ProductDetailPage extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  '$productName ditambahkan ke Lab',
+                  '$productName has been added to the Lab',
                   style: const TextStyle(fontSize: 14),
                 ),
               ),
@@ -98,7 +98,7 @@ class ProductDetailPage extends StatelessWidget {
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 3),
           action: SnackBarAction(
-            label: 'Lihat',
+            label: 'View',
             textColor: Colors.white,
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/cek_kombinasi');
@@ -111,6 +111,7 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Ambil data produk dari route arguments
     final product =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
@@ -118,6 +119,8 @@ class ProductDetailPage extends StatelessWidget {
         product['keyIngredients'] as List<Map<String, dynamic>>?;
     final allIngredients = product['allIngredients'] as String?;
     final category = product['category'] ?? 'Cleansing';
+    final productName = product['name'] ?? 'Unknown Product';
+    final productBrand = product['brand'] ?? 'Unknown Brand';
 
     return Scaffold(
       backgroundColor: const Color(0xffF9FAFB),
@@ -159,8 +162,6 @@ class ProductDetailPage extends StatelessWidget {
           // Add to Lab Button with dynamic state
           Consumer<IngredientsProvider>(
             builder: (context, provider, child) {
-              final productName = product['name'] ?? 'Unknown Product';
-              final productBrand = product['brand'] ?? 'Unknown Brand';
               final isInLab = provider.hasProduct(productName, productBrand);
 
               return Container(
@@ -209,7 +210,7 @@ class ProductDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            isInLab ? 'Sudah di Lab' : 'Add to Lab',
+                            isInLab ? 'Already in Lab' : 'Add to Lab',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,

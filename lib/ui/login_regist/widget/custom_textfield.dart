@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final IconData prefixIcon;
   final TextInputType keyboardType;
   final TextEditingController? controller;
+  final ValueChanged<String>? onChanged; // Tambahkan parameter ini
 
   const CustomTextField({
     super.key,
@@ -14,6 +15,7 @@ class CustomTextField extends StatelessWidget {
     required this.prefixIcon,
     this.keyboardType = TextInputType.text,
     this.controller,
+    this.onChanged, // Tambahkan parameter ini
   });
 
   @override
@@ -29,6 +31,7 @@ class CustomTextField extends StatelessWidget {
         TextField(
           controller: controller,
           keyboardType: keyboardType,
+          onChanged: onChanged, // Tambahkan ini
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: Icon(prefixIcon),

@@ -1,6 +1,11 @@
+import 'package:capstone/provider/user_provider.dart';
+import 'package:capstone/ui/login_regist/provider/form_validation.dart';
+import 'package:capstone/ui/login_regist/provider/loading_provider.dart';
+import 'package:capstone/ui/login_regist/provider/visibility_provider.dart';
 import 'package:capstone/ui/login_regist/widget/custom_textfield.dart';
 import 'package:capstone/ui/login_regist/widget/password_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -14,19 +19,31 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
-  bool _obscurePassword = true;
-  bool _obscureConfirm = true;
-
   @override
   void initState() {
     super.initState();
-    // Tambahkan listener supaya tombol bisa aktif saat user mengetik
-    _emailController.addListener(_updateState);
-    _passwordController.addListener(_updateState);
-    _confirmController.addListener(_updateState);
-  }
+    // Reset providers saat halaman dibuka
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FormValidationProvider>().reset();
+      context.read<PasswordVisibilityProvider>().reset();
+      context.read<LoadingProvider>().setLoading(false);
+    });
 
-  void _updateState() => setState(() {});
+    // Listen to text changes dan update provider
+    _emailController.addListener(() {
+      context.read<FormValidationProvider>().setEmail(_emailController.text);
+    });
+    _passwordController.addListener(() {
+      context.read<FormValidationProvider>().setPassword(
+        _passwordController.text,
+      );
+    });
+    _confirmController.addListener(() {
+      context.read<FormValidationProvider>().setConfirmPassword(
+        _confirmController.text,
+      );
+    });
+  }
 
   @override
   void dispose() {
@@ -36,14 +53,55 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     super.dispose();
   }
 
-  bool get passwordsMatch =>
-      _passwordController.text == _confirmController.text &&
-      _passwordController.text.isNotEmpty;
+  Future<void> _resetPassword() async {
+    final formProvider = context.read<FormValidationProvider>();
+    final userProvider = context.read<UserProvider>();
+    final loadingProvider = context.read<LoadingProvider>();
 
-  bool get isFormFilled =>
-      _emailController.text.isNotEmpty &&
-      _passwordController.text.isNotEmpty &&
-      _confirmController.text.isNotEmpty;
+    final email = _emailController.text.trim();
+    final newPassword = _passwordController.text.trim();
+
+    if (!formProvider.isResetFormValid) {
+      String message = 'Please fill in all fields.';
+      if (!formProvider.isEmailValid) {
+        message = 'Please enter a valid email address.';
+      } else if (!formProvider.isPasswordValid) {
+        message = 'Password must be at least 8 characters.';
+      } else if (!formProvider.doPasswordsMatch) {
+        message = 'Passwords do not match.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
+      return;
+    }
+
+    loadingProvider.setLoading(true);
+
+    final success = await userProvider.resetPassword(email, newPassword);
+
+    loadingProvider.setLoading(false);
+
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password reset successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to reset password. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +110,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: Container(
-          child: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-          ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
         ),
       ),
       body: SafeArea(
@@ -77,7 +133,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Please type something you’ll remember',
+                      "Please type something you'll remember",
                       style: TextStyle(color: Color(0xff4A4A4B)),
                     ),
                     const SizedBox(height: 24),
@@ -94,66 +150,93 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     const SizedBox(height: 20),
 
                     // NEW PASSWORD
-                    PasswordTextField(
-                      label: 'New password',
-                      hintText: 'must be 8 characters',
-                      controller: _passwordController,
-                      obscurePassword: _obscurePassword,
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
+                    Consumer<PasswordVisibilityProvider>(
+                      builder: (context, passwordProvider, child) {
+                        return PasswordTextField(
+                          label: 'New password',
+                          hintText: 'must be 8 characters',
+                          controller: _passwordController,
+                          obscurePassword: passwordProvider.obscurePassword,
+                          onToggleVisibility: () {
+                            passwordProvider.togglePasswordVisibility();
+                          },
+                        );
                       },
                     ),
 
                     const SizedBox(height: 20),
 
                     // CONFIRM PASSWORD
-                    PasswordTextField(
-                      label: 'Confirm new password',
-                      hintText: 'repeat password',
-                      controller: _confirmController,
-                      obscurePassword: _obscureConfirm,
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscureConfirm = !_obscureConfirm;
-                        });
+                    Consumer<PasswordVisibilityProvider>(
+                      builder: (context, passwordProvider, child) {
+                        return PasswordTextField(
+                          label: 'Confirm new password',
+                          hintText: 'repeat password',
+                          controller: _confirmController,
+                          obscurePassword:
+                              passwordProvider.obscureConfirmPassword,
+                          onToggleVisibility: () {
+                            passwordProvider.toggleConfirmPasswordVisibility();
+                          },
+                        );
                       },
                     ),
 
                     const SizedBox(height: 8),
 
-                    if (!passwordsMatch && _confirmController.text.isNotEmpty)
-                      const Text(
-                        "Passwords do not match",
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
+                    // ERROR MESSAGE
+                    Consumer<FormValidationProvider>(
+                      builder: (context, formProvider, child) {
+                        if (!formProvider.doPasswordsMatch &&
+                            formProvider.confirmPassword.isNotEmpty) {
+                          return const Text(
+                            "Passwords do not match",
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
 
                     const SizedBox(height: 24),
 
                     // RESET BUTTON
-                    ElevatedButton(
-                      onPressed: isFormFilled && passwordsMatch
-                          ? () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Password reset successfully!'),
+                    Consumer2<FormValidationProvider, LoadingProvider>(
+                      builder: (context, formProvider, loadingProvider, child) {
+                        final isEnabled =
+                            formProvider.isResetFormValid &&
+                            !loadingProvider.isLoading;
+
+                        return ElevatedButton(
+                          onPressed: isEnabled ? _resetPassword : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff007BFF),
+                            disabledBackgroundColor: const Color(0xffC4C4C4),
+                            minimumSize: const Size.fromHeight(50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: loadingProvider.isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : const Text(
+                                  'Reset password',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              );
-                            }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff007BFF),
-                        disabledBackgroundColor: const Color(0xffC4C4C4),
-                        minimumSize: const Size.fromHeight(50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'Reset password',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -169,7 +252,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   const Text("Remember your account? "),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/');
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/',
+                        (route) => false,
+                      );
                     },
                     child: const Text(
                       'Log in',

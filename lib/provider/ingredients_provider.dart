@@ -30,11 +30,13 @@ class IngredientsProvider extends ChangeNotifier {
   final List<ProductIngredient> _products = [];
   final List<String> _manualIngredients = [];
   bool _isLoading = false;
+  bool _isInputFocused = false; // ✨ Tambahkan ini
 
   // Getters
   List<ProductIngredient> get products => List.unmodifiable(_products);
   List<String> get manualIngredients => List.unmodifiable(_manualIngredients);
   bool get isLoading => _isLoading;
+  bool get isInputFocused => _isInputFocused; // ✨ Tambahkan getter ini
   bool get hasIngredients =>
       _products.isNotEmpty || _manualIngredients.isNotEmpty;
   int get ingredientsCount => _products.length + _manualIngredients.length;
@@ -167,6 +169,13 @@ class IngredientsProvider extends ChangeNotifier {
   /// Set loading state (for API calls or processing)
   void setLoading(bool value) {
     _isLoading = value;
+    notifyListeners();
+  }
+
+  // ✨ Input focus state
+  /// Set input focus state (for manual input widget)
+  void setInputFocused(bool value) {
+    _isInputFocused = value;
     notifyListeners();
   }
 

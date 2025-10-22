@@ -1,6 +1,9 @@
+import 'package:capstone/ui/login_regist/provider/form_validation.dart';
+import 'package:capstone/ui/login_regist/provider/visibility_provider.dart';
 import 'package:capstone/ui/login_regist/widget/custom_textfield.dart';
 import 'package:capstone/ui/login_regist/widget/password_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,16 +17,16 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
-  bool _obscurePassword = true;
-  bool _obscureConfirm = true;
-  bool _isAccepted = false;
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bool passwordsMatch =
-        _passwordController.text == _confirmController.text &&
-        _passwordController.text.isNotEmpty;
-
     return Scaffold(
       backgroundColor: const Color(0xffF9FAFB),
       appBar: AppBar(
@@ -43,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TITLE 
+                    // TITLE
                     const Text(
                       'Create account',
                       style: TextStyle(
@@ -60,113 +63,147 @@ class _RegisterPageState extends State<RegisterPage> {
                       prefixIcon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
+                      onChanged: (value) {
+                        context.read<FormValidationProvider>().setEmail(value);
+                      },
                     ),
 
                     const SizedBox(height: 20),
 
                     // PASSWORD
-                    PasswordTextField(
-                      label: 'Password',
-                      hintText: 'At least 8 characters',
-                      controller: _passwordController,
-                      obscurePassword: _obscurePassword,
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
+                    Consumer<PasswordVisibilityProvider>(
+                      builder: (context, visibilityProvider, child) {
+                        return PasswordTextField(
+                          label: 'Password',
+                          hintText: 'At least 8 characters',
+                          controller: _passwordController,
+                          obscurePassword: visibilityProvider.obscurePassword,
+                          onToggleVisibility: () {
+                            visibilityProvider.togglePasswordVisibility();
+                          },
+                          onChanged: (value) {
+                            context.read<FormValidationProvider>().setPassword(
+                              value,
+                            );
+                          },
+                        );
                       },
                     ),
 
                     const SizedBox(height: 20),
 
                     // CONFIRM PASSWORD
-                    PasswordTextField(
-                      label: 'Confirm Password',
-                      hintText: 'At least 8 characters',
-                      controller: _confirmController,
-                      obscurePassword: _obscureConfirm,
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscureConfirm = !_obscureConfirm;
-                        });
+                    Consumer<PasswordVisibilityProvider>(
+                      builder: (context, visibilityProvider, child) {
+                        return PasswordTextField(
+                          label: 'Confirm Password',
+                          hintText: 'At least 8 characters',
+                          controller: _confirmController,
+                          obscurePassword:
+                              visibilityProvider.obscureConfirmPassword,
+                          onToggleVisibility: () {
+                            visibilityProvider
+                                .toggleConfirmPasswordVisibility();
+                          },
+                          onChanged: (value) {
+                            context
+                                .read<FormValidationProvider>()
+                                .setConfirmPassword(value);
+                          },
+                        );
                       },
                     ),
 
                     const SizedBox(height: 8),
 
                     //  ERROR PASSWORD TIDAK SAMA
-                    if (!passwordsMatch && _confirmController.text.isNotEmpty)
-                      const Text(
-                        "Passwords do not match",
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
+                    Consumer<FormValidationProvider>(
+                      builder: (context, formProvider, child) {
+                        if (!formProvider.doPasswordsMatch &&
+                            formProvider.confirmPassword.isNotEmpty) {
+                          return const Text(
+                            "Passwords do not match",
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
 
                     const SizedBox(height: 16),
 
                     // ACCEPT TERMS
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Checkbox(
-                          value: _isAccepted,
-                          onChanged: (value) {
-                            setState(() => _isAccepted = value ?? false);
-                          },
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          activeColor: Colors.black,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              'I accept the terms and privacy policy',
-                              style: TextStyle(
-                                color: Colors.grey.shade800,
-                                fontSize: 14,
+                    Consumer<FormValidationProvider>(
+                      builder: (context, formProvider, child) {
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Checkbox(
+                              value: formProvider.termsAccepted,
+                              onChanged: (value) {
+                                formProvider.setTermsAccepted(value ?? false);
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              activeColor: Colors.black,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(
+                                  'I accept the terms and privacy policy',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade800,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
 
                     const SizedBox(height: 24),
 
                     // SIGN UP BUTTON
-                    ElevatedButton(
-                      onPressed: _isAccepted && passwordsMatch
-                          ? () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Account created successfully!',
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff007BFF),
-                        disabledBackgroundColor: const Color(0xffC4C4C4),
-                        minimumSize: const Size.fromHeight(50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
+                    Consumer<FormValidationProvider>(
+                      builder: (context, formProvider, child) {
+                        return ElevatedButton(
+                          onPressed: formProvider.isRegisterFormValid
+                              ? () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Account created successfully!',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xff007BFF),
+                            disabledBackgroundColor: const Color(0xffC4C4C4),
+                            minimumSize: const Size.fromHeight(50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            'Sign up',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
             ),
 
-            // ALREADY HAVE ACCOUNT 
+            // ALREADY HAVE ACCOUNT
             Padding(
               padding: const EdgeInsets.only(bottom: 24),
               child: Row(

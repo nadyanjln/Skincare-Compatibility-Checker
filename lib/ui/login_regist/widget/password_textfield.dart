@@ -6,14 +6,16 @@ class PasswordTextField extends StatelessWidget {
   final TextEditingController? controller;
   final bool obscurePassword;
   final VoidCallback onToggleVisibility;
+  final ValueChanged<String>? onChanged; // Tambahkan parameter ini
 
   const PasswordTextField({
     super.key,
     required this.label,
     required this.hintText,
+    this.controller,
     required this.obscurePassword,
     required this.onToggleVisibility,
-    this.controller,
+    this.onChanged, // Tambahkan parameter ini
   });
 
   @override
@@ -29,16 +31,15 @@ class PasswordTextField extends StatelessWidget {
         TextField(
           controller: controller,
           obscureText: obscurePassword,
+          onChanged: onChanged, // Tambahkan ini
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: const Icon(Icons.lock_outline),
             suffixIcon: IconButton(
-              icon: Icon(
-                obscurePassword
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-              ),
               onPressed: onToggleVisibility,
+              icon: Icon(
+                obscurePassword ? Icons.visibility_off : Icons.visibility,
+              ),
             ),
             filled: true,
             fillColor: Colors.white,

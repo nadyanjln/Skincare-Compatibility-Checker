@@ -17,7 +17,7 @@ class IngredientListWidget extends StatelessWidget {
                 Icon(Icons.science_outlined, size: 80, color: Colors.grey[300]),
                 const SizedBox(height: 16),
                 Text(
-                  'Belum ada produk',
+                  'No products yet',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[600],
@@ -26,7 +26,7 @@ class IngredientListWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Tambahkan produk dari halaman utama',
+                  'Add products from the main page',
                   style: TextStyle(fontSize: 14, color: Colors.grey[400]),
                 ),
               ],

@@ -1,6 +1,11 @@
+import 'package:capstone/provider/user_provider.dart';
+import 'package:capstone/ui/login_regist/provider/form_validation.dart';
+import 'package:capstone/ui/login_regist/provider/loading_provider.dart';
+import 'package:capstone/ui/login_regist/provider/visibility_provider.dart';
 import 'package:capstone/ui/login_regist/widget/custom_textfield.dart';
 import 'package:capstone/ui/login_regist/widget/password_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -10,13 +15,29 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool _obscurePassword = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Dummy credentials
-  final String dummyEmail = "user@gmail.com";
-  final String dummyPassword = "password123";
+  @override
+  void initState() {
+    super.initState();
+    // Reset providers saat halaman dibuka
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FormValidationProvider>().reset();
+      context.read<PasswordVisibilityProvider>().reset();
+      context.read<LoadingProvider>().setLoading(false);
+    });
+
+    // Listen to text changes dan update provider
+    _emailController.addListener(() {
+      context.read<FormValidationProvider>().setEmail(_emailController.text);
+    });
+    _passwordController.addListener(() {
+      context.read<FormValidationProvider>().setPassword(
+        _passwordController.text,
+      );
+    });
+  }
 
   @override
   void dispose() {
@@ -25,19 +46,40 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
+    final formProvider = context.read<FormValidationProvider>();
+    final userProvider = context.read<UserProvider>();
+    final loadingProvider = context.read<LoadingProvider>();
+
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email == dummyEmail && password == dummyPassword) {
+    if (!formProvider.isLoginFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill in all fields."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    loadingProvider.setLoading(true);
+
+    final success = await userProvider.login(email, password);
+
+    loadingProvider.setLoading(false);
+
+    if (!mounted) return;
+
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Login successful!"),
           backgroundColor: Colors.green,
         ),
       );
-
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -93,15 +135,17 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 20),
 
                       // PASSWORD
-                      PasswordTextField(
-                        label: 'Password',
-                        hintText: 'At least 8 characters',
-                        controller: _passwordController,
-                        obscurePassword: _obscurePassword,
-                        onToggleVisibility: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
+                      Consumer<PasswordVisibilityProvider>(
+                        builder: (context, passwordProvider, child) {
+                          return PasswordTextField(
+                            label: 'Password',
+                            hintText: 'At least 8 characters',
+                            controller: _passwordController,
+                            obscurePassword: passwordProvider.obscurePassword,
+                            onToggleVisibility: () {
+                              passwordProvider.togglePasswordVisibility();
+                            },
+                          );
                         },
                       ),
 
@@ -124,19 +168,46 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 16),
 
                       // LOGIN BUTTON
-                      ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff007BFF),
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Log in',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                      Consumer2<FormValidationProvider, LoadingProvider>(
+                        builder:
+                            (context, formProvider, loadingProvider, child) {
+                              final isEnabled =
+                                  formProvider.isLoginFormValid &&
+                                  !loadingProvider.isLoading;
+
+                              return ElevatedButton(
+                                onPressed: isEnabled ? _login : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff007BFF),
+                                  disabledBackgroundColor: const Color(
+                                    0xffC4C4C4,
+                                  ),
+                                  minimumSize: const Size.fromHeight(50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: loadingProvider.isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Log in',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              );
+                            },
                       ),
 
                       const SizedBox(height: 24),

@@ -1,8 +1,12 @@
-import 'package:capstone/ui/detail_product/widget/ingredient_card.dart';
+import 'package:capstone/provider/ingredients_provider.dart';
+import 'package:capstone/provider/wishlist_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:capstone/data/category_data.dart'; 
+import 'package:capstone/data/category_data.dart';
+import 'package:capstone/ui/detail_product/widget/ingredient_card.dart';
+import 'package:provider/provider.dart';
 
-class ProductInfoCard extends StatefulWidget {
+
+class ProductInfoCard extends StatelessWidget {
   final Map<String, dynamic> product;
   final String category;
   final List<Map<String, dynamic>>? keyIngredients;
@@ -15,18 +19,11 @@ class ProductInfoCard extends StatefulWidget {
   });
 
   @override
-  State<ProductInfoCard> createState() => _ProductInfoCardState();
-}
-
-class _ProductInfoCardState extends State<ProductInfoCard> {
-  bool isFavorite = false;
-
-  @override
   Widget build(BuildContext context) {
-    // cari icon berdasarkan category
+    // Ambil icon berdasarkan kategori
     final categoryData = categories.firstWhere(
-      (cat) => cat['label'] == widget.category,
-      orElse: () => {'icon': Icons.category}, // default kalau ga ketemu
+      (cat) => cat['label'] == category,
+      orElse: () => {'icon': Icons.category},
     );
 
     return Container(
@@ -50,9 +47,9 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
             children: [
               const SizedBox(height: 40),
 
-              // Product Image
+              // Gambar produk
               Image.asset(
-                widget.product['image'],
+                product['image'],
                 height: 200,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -68,7 +65,7 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
               ),
               const SizedBox(height: 24),
 
-              // Category Badge pakai icon dari category_data.dart
+              // Badge kategori
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -79,7 +76,7 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    widget.category,
+                    category,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade700,
@@ -90,9 +87,9 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
               ),
               const SizedBox(height: 12),
 
-              // Product Name
+              // Nama produk
               Text(
-                widget.product['name'],
+                product['name'],
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
@@ -103,8 +100,7 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
               const SizedBox(height: 24),
 
               // Key Ingredients
-              if (widget.keyIngredients != null &&
-                  widget.keyIngredients!.isNotEmpty)
+              if (keyIngredients != null && keyIngredients!.isNotEmpty)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -133,14 +129,12 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    ...widget.keyIngredients!.asMap().entries.map((entry) {
+                    ...keyIngredients!.asMap().entries.map((entry) {
                       final index = entry.key;
                       final ingredient = entry.value;
                       return Padding(
                         padding: EdgeInsets.only(
-                          bottom: index < widget.keyIngredients!.length - 1
-                              ? 12
-                              : 0,
+                          bottom: index < keyIngredients!.length - 1 ? 12 : 0,
                         ),
                         child: IngredientCard(
                           title: ingredient['name'] ?? '',
@@ -153,44 +147,63 @@ class _ProductInfoCardState extends State<ProductInfoCard> {
             ],
           ),
 
-          // Wishlist Button
+          // Tombol Wishlist (pakai Provider)
           Positioned(
             right: 8,
             top: 8,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xff007BFF), width: 1.5),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      isFavorite = !isFavorite;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          isFavorite
-                              ? 'Produk ditambahkan ke Wishlist'
-                              : 'Produk dihapus dari Wishlist',
-                        ),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(20),
-                  child: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: const Color(0xff007BFF),
-                    size: 20,
+            child: Consumer<WishlistProvider>(
+              builder: (context, wishlistProvider, _) {
+                // Buat model produk untuk disimpan di provider
+                final productItem = ProductIngredient(
+                  name: product['name'] ?? '',
+                  brand: product['brand'] ?? '',
+                  image: product['image'] ?? '',
+                  ingredients: product['ingredients'] ?? [],
+                );
+
+                final isInWishlist = wishlistProvider.isInWishlist(
+                  productItem.name,
+                  productItem.brand,
+                );
+
+                return Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xff007BFF),
+                      width: 1.5,
+                    ),
                   ),
-                ),
-              ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        wishlistProvider.toggleWishlist(productItem);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isInWishlist
+                                  ? '${productItem.name} removed from Wishlist 💔'
+                                  : '${productItem.name} added to Wishlist ❤️',
+                            ),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        isInWishlist ? Icons.favorite : Icons.favorite_border,
+                        color: const Color(0xff007BFF),
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

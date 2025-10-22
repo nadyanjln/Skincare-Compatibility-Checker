@@ -13,7 +13,6 @@ class ManualInputWidget extends StatefulWidget {
 
 class _ManualInputWidgetState extends State<ManualInputWidget> {
   final TextEditingController _controller = TextEditingController();
-  bool _isFocused = false;
 
   void _addIngredient() {
     if (_controller.text.trim().isEmpty) return;
@@ -24,9 +23,7 @@ class _ManualInputWidgetState extends State<ManualInputWidget> {
 
     // Hilangkan fokus setelah menambah
     FocusScope.of(context).unfocus();
-    setState(() {
-      _isFocused = false;
-    });
+    provider.setInputFocused(false);
   }
 
   @override
@@ -37,106 +34,114 @@ class _ManualInputWidgetState extends State<ManualInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: _isFocused ? const Color(0xff3B82F6) : Colors.transparent,
-          width: 2,
-        ),
-        boxShadow: _isFocused
-            ? [
-                BoxShadow(
-                  color: const Color(0xff3B82F6).withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [],
-      ),
-      child: Column(
-        children: [
-          TextField(
-            controller: _controller,
-            maxLines: null,
-            minLines: 2,
-            textInputAction: TextInputAction.done,
-            onTap: () {
-              setState(() {
-                _isFocused = true;
-              });
-            },
-            onSubmitted: (value) {
-              _addIngredient();
-            },
-            onTapOutside: (_) {
-              setState(() {
-                _isFocused = false;
-              });
-            },
-            decoration: InputDecoration(
-              hintText:
-                  "Masukkan Kandungan Skincare kamu secara manual di sini!",
-              hintStyle: const TextStyle(
-                color: Color(0xff9CA3AF),
-                fontSize: 14,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
+    return Consumer<IngredientsProvider>(
+      builder: (context, provider, child) {
+        final isFocused = provider.isInputFocused;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isFocused ? const Color(0xff3B82F6) : Colors.transparent,
+              width: 2,
             ),
+            boxShadow: isFocused
+                ? [
+                    BoxShadow(
+                      color: const Color(0xff3B82F6).withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [],
           ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          child: Column(
             children: [
-              // Tombol Kamera
-              Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xff3B82F6), width: 2),
-                ),
-                child: IconButton(
-                  onPressed: widget.onCameraPressed,
-                  icon: const Icon(
-                    Icons.camera_alt_outlined,
-                    color: Color(0xff3B82F6),
-                    size: 24,
+              TextField(
+                controller: _controller,
+                maxLines: null,
+                minLines: 2,
+                textInputAction: TextInputAction.done,
+                onTap: () {
+                  provider.setInputFocused(true);
+                },
+                onSubmitted: (value) {
+                  _addIngredient();
+                },
+                onTapOutside: (_) {
+                  provider.setInputFocused(false);
+                },
+                decoration: InputDecoration(
+                  hintText: "Enter your skincare ingredients manually here!",
+                  hintStyle: const TextStyle(
+                    color: Color(0xff9CA3AF),
+                    fontSize: 14,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              // Tombol Tambah
-              Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                  color: const Color(0xff3B82F6),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: IconButton(
-                  onPressed: _addIngredient,
-                  icon: const Icon(Icons.add, color: Colors.white, size: 28),
-                ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // Tombol Kamera
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: const Color(0xff3B82F6),
+                        width: 2,
+                      ),
+                    ),
+                    child: IconButton(
+                      onPressed: widget.onCameraPressed,
+                      icon: const Icon(
+                        Icons.camera_alt_outlined,
+                        color: Color(0xff3B82F6),
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Tombol Tambah
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff3B82F6),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: IconButton(
+                      onPressed: _addIngredient,
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -1,6 +1,9 @@
+import 'package:capstone/provider/user_provider.dart';
+import 'package:capstone/provider/wishlist_provider.dart';
 import 'package:capstone/style/skincare_text_style.dart';
 import 'package:capstone/ui/profile/widget/expanded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../bottom_navbar.dart';
 
@@ -17,31 +20,58 @@ class Profile extends StatelessWidget {
           child: Column(
             children: [
               Center(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        radius: 80.0,
-                        backgroundImage: AssetImage(
-                          "assets/blank_profile.png",
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16.0,
+                    horizontal: 16.0,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Teks Full Name dan Address di kiri
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Full Name",
+                              style: SkincareTextStyle.headlineSmall,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "address@domain.com",
+                              style: SkincareTextStyle.titleSmall,
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        style: SkincareTextStyle.headlineMedium,
-                        "Nama Lengkap",
+
+                      // Jarak antara teks dan tombol
+                      const SizedBox(width: 8),
+
+                      // Tombol love dengan background biru dan lingkaran
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff007BFF), // biru
+                          shape: BoxShape
+                              .circle, // bisa diganti BoxShape.rectangle untuk kotak
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/wishlist');
+                          },
+                          icon: const Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
                       ),
-                    ),
-                    Text(
-                      style: SkincareTextStyle.titleMedium,
-                      "address@domain.com",
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+
               Row(
                 children: [
                   Padding(
@@ -51,27 +81,34 @@ class Profile extends StatelessWidget {
                       right: 16,
                       left: 16,
                     ),
-                    child: Text(style: SkincareTextStyle.titleLarge, "Profil"),
+                    child: Text(
+                      style: SkincareTextStyle.titleMedium,
+                      "Profile",
+                    ),
                   ),
                 ],
               ),
               ExpandedButton(
-                title: "Ganti Nama",
-                description:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
-                ontap: () {},
+                title: "Change Name",
+                description: "Update your profile name.",
+                ontap: () {
+                  Navigator.pushNamed(context, '/ganti_nama');
+                },
               ),
               ExpandedButton(
-                title: "Ganti Email",
-                description:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
-                ontap: () {},
+                title: "Change Email",
+                description: "Update the email address linked to your account.",
+                ontap: () {
+                  Navigator.pushNamed(context, '/ganti_email');
+                },
               ),
               ExpandedButton(
-                title: "Ganti Password",
+                title: "Change Password",
                 description:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
-                ontap: () {},
+                    "Update your password to keep your account secure.",
+                ontap: () {
+                  Navigator.pushNamed(context, '/ganti_password');
+                },
               ),
               const SizedBox(height: 16),
               Padding(
@@ -81,14 +118,40 @@ class Profile extends StatelessWidget {
                   height: 48,
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      // Akses provider
+                      final userProvider = Provider.of<UserProvider>(
+                        context,
+                        listen: false,
+                      );
+                      final wishlistProvider = Provider.of<WishlistProvider>(
+                        context,
+                        listen: false,
+                      );
+
+                      // Hapus semua data user dan wishlist
+                      userProvider.logout();
+                      wishlistProvider.clearWishlist();
+
+                      // Arahkan ke halaman login dan hapus semua route sebelumnya
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/',
+                        (route) => false,
+                      );
                     },
+
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.grey),
+                      side: const BorderSide(color: Color(0xff007BFF)),
                       shape: const StadiumBorder(),
                       backgroundColor: const Color(0xFFF9FAFB),
                     ),
-                    child: Text("Keluar", style: SkincareTextStyle.titleMedium),
+                    child: Text(
+                      "Logout",
+                      style: SkincareTextStyle.titleMedium.copyWith(
+                        color: const Color(0xff007BFF),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -96,7 +159,6 @@ class Profile extends StatelessWidget {
           ),
         ),
       ),
-
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 2,
         onTap: (index) {

@@ -14,58 +14,76 @@ class ExpandedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+    return InkWell(
+      onTap: ontap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Kolom teks kiri
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE9F2FF),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.blue),
+
+            const SizedBox(width: 12),
+
+            // Tombol panah kanan
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE9F2FF),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Color(0xff007BFF)),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Color(0xff007BFF),
+                size: 20,
+              ),
             ),
-            child: const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.blue,
-              size: 20,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -9,10 +9,9 @@ class CombinationPage extends StatelessWidget {
   const CombinationPage({super.key});
 
   void _handleCameraAction(BuildContext context) {
-    // TODO: Implementasi aksi kamera
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Fitur kamera akan segera tersedia'),
+        content: Text('Camera feature will be available soon'),
         duration: Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -25,7 +24,7 @@ class CombinationPage extends StatelessWidget {
     if (!provider.hasIngredients) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Tidak ada kandungan untuk dihapus'),
+          content: Text('No ingredients to remove'),
           duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
         ),
@@ -40,14 +39,14 @@ class CombinationPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: const Text('Hapus Semua'),
+          title: const Text('Delete All'),
           content: const Text(
-            'Apakah Anda yakin ingin menghapus semua kandungan?',
+            'Are you sure you want to delete all ingredients?',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
               onPressed: () {
@@ -55,14 +54,14 @@ class CombinationPage extends StatelessWidget {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Semua kandungan telah dihapus'),
+                    content: Text('All ingredients have been deleted'),
                     duration: Duration(seconds: 2),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
               },
               child: const Text(
-                'Hapus',
+                'Delete',
                 style: TextStyle(color: Colors.redAccent),
               ),
             ),
@@ -82,7 +81,7 @@ class CombinationPage extends StatelessWidget {
             children: [
               Icon(Icons.info_outline, color: Colors.white, size: 20),
               SizedBox(width: 8),
-              Text('Tambahkan kandungan terlebih dahulu'),
+              Text('Please add ingredients first'),
             ],
           ),
           backgroundColor: Colors.orange,
@@ -93,14 +92,13 @@ class CombinationPage extends StatelessWidget {
       return;
     }
 
-    // TODO: Navigate to result page or process combination
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
             const Icon(Icons.check_circle, color: Colors.white, size: 20),
             const SizedBox(width: 8),
-            Text('Mengecek ${provider.ingredientsCount} kandungan...'),
+            Text('Checking ${provider.ingredientsCount} ingredients...'),
           ],
         ),
         backgroundColor: const Color(0xff007BFF),
@@ -144,8 +142,8 @@ class CombinationPage extends StatelessWidget {
                     ),
                     label: Text(
                       provider.hasIngredients
-                          ? "Hapus Semua (${provider.ingredientsCount})"
-                          : "Hapus Semua",
+                          ? "Delete All (${provider.ingredientsCount})"
+                          : "Delete All",
                       style: const TextStyle(color: Colors.black54),
                     ),
                   ),
@@ -157,30 +155,34 @@ class CombinationPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Padding(
+          SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+            physics: Provider.of<IngredientsProvider>(context).hasIngredients
+                ? const AlwaysScrollableScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
             child: Column(
               children: [
-                // Input Container
                 ManualInputWidget(
                   onCameraPressed: () => _handleCameraAction(context),
                 ),
                 const SizedBox(height: 16),
 
-                // List Kandungan
-                const Expanded(child: IngredientListWidget()),
+                // Gunakan ukuran dinamis agar bisa scroll saat kosong
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: const IngredientListWidget(),
+                ),
 
-                // Extra padding to prevent content from being hidden behind button
-                const SizedBox(height: 80),
+                const SizedBox(height: 100),
               ],
             ),
           ),
 
-          // Floating Check Combination Button
+          // Tombol "Check Combination"
           Positioned(
             left: 20,
             right: 20,
-            bottom: 20, // Position above bottom navbar
+            bottom: 20,
             child: Consumer<IngredientsProvider>(
               builder: (context, provider, child) {
                 return AnimatedOpacity(
