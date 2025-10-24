@@ -37,6 +37,7 @@ dependencies:
   google_fonts: ^6.3.2
   provider: ^6.1.5+1
   http: ^1.5.0
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ flutter:
     - assets/onboarding1.png
     - assets/onboarding2.png
     - assets/onboarding3.png
+    - assets/icon.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -95,3 +97,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  min_sdk_android: 21
