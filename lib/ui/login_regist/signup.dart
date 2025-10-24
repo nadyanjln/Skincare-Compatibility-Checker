@@ -1,3 +1,4 @@
+import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/ui/login_regist/provider/form_validation.dart';
 import 'package:capstone/ui/login_regist/provider/visibility_provider.dart';
 import 'package:capstone/ui/login_regist/widget/custom_textfield.dart';
@@ -27,6 +28,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _handleRegister(BuildContext context) async {
     final formProvider = context.read<FormValidationProvider>();
+    final userProvider = context.read<UserProvider>();
+
+    final name = "No Name";
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
     if (!formProvider.isRegisterFormValid) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       // Simulasi proses register (contoh: API call)
-      await Future.delayed(const Duration(seconds: 1));
+      await userProvider.register(name, email, password);
 
       // Misalnya register berhasil
       ScaffoldMessenger.of(context).showSnackBar(

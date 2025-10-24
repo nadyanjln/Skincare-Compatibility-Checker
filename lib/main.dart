@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'data/api/api_services.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -31,10 +33,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider(create: (_) => ApiServices()),
         ChangeNotifierProvider(create: (_) => IngredientsProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider(context.read<ApiServices>())),
         ChangeNotifierProvider(create: (_) => PasswordVisibilityProvider()),
         ChangeNotifierProvider(create: (_) => FormValidationProvider()),
         ChangeNotifierProvider(create: (_) => LoadingProvider()),
@@ -43,11 +46,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          '/': (context) => const Login(),
-          '/signup': (context) => const RegisterPage(),
-          '/forgotpw': (context) => const ForgotPassword(),
-          '/home': (context) => const Home(),
-          '/product_detail': (context) => const ProductDetailPage(),
+          '/': (_) => const Login(),
+          '/signup': (_) => const RegisterPage(),
+          '/forgotpw': (_) => const ForgotPassword(),
+          '/home': (_) => const Home(),
+          '/product_detail': (_) => const ProductDetailPage(),
           '/profile': (_) => const Profile(),
           '/cek_kombinasi': (_) => const CombinationPage(),
           '/ganti_nama': (_) => const GantiNama(),

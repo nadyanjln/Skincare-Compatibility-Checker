@@ -1,6 +1,11 @@
+import 'package:capstone/data/api/api_services.dart';
 import 'package:flutter/foundation.dart';
 
 class UserProvider extends ChangeNotifier {
+  final ApiServices _apiServices;
+
+  UserProvider(this._apiServices);
+
   // Data user
   String? _name;
   String? _email;
@@ -13,19 +18,18 @@ class UserProvider extends ChangeNotifier {
   String? get userId => _userId;
   bool get isLoggedIn => _isLoggedIn;
 
-  // Dummy credentials untuk validasi login demo
-  final String _dummyEmail = "user@gmail.com";
-  final String _dummyPassword = "password123";
-
   // Login method
   Future<bool> login(String email, String password) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      final result = await _apiServices.login(email, password);
 
-      if (email == _dummyEmail && password == _dummyPassword) {
-        _email = email;
-        _name = "User Demo";
-        _userId = "user_${DateTime.now().millisecondsSinceEpoch}";
+      // pre registered
+      // user@gmail.com
+      // password123
+      if (result.user.email == email) {
+        _email = result.user.email;
+        _name = result.user.name;
+        _userId = result.user.name;
         _isLoggedIn = true;
         notifyListeners();
         return true;
@@ -40,10 +44,11 @@ class UserProvider extends ChangeNotifier {
   // Register method
   Future<bool> register(String name, String email, String password) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      _name = name;
-      _email = email;
-      _userId = "user_${DateTime.now().millisecondsSinceEpoch}";
+      final result = await _apiServices.signup(email, name, password);
+
+      _name = result.name;
+      _email = result.email;
+      _userId = result.id.toString();
       _isLoggedIn = true;
       notifyListeners();
       return true;
@@ -56,7 +61,8 @@ class UserProvider extends ChangeNotifier {
   // Reset password
   Future<bool> resetPassword(String email, String newPassword) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await _apiServices.changePassword(_userId!, newPassword);
+
       return true;
     } catch (e) {
       debugPrint("Reset password error: $e");
