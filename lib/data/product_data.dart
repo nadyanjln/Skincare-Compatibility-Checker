@@ -1,74 +1,78 @@
 final List<Map<String, dynamic>> products = [
   {
     'image': 'assets/products/moisturizer.jpg',
-    'name': 'Moisturizer dengan tekstur ringan dan cepat meresap.',
+    'name': 'La Roche-Posay Hydrating Light Moisturizer',
     'brand': 'La Roche-Posay',
     'category': 'Moisturizer',
     'keyIngredients': [
       {
         'name': 'Hyaluronic Acid',
         'description':
-            'Membantu melembapkan kulit dan mengikat air pada lapisan kulit.',
+            'Helps hydrate the skin and retain moisture in the deeper layers.',
       },
       {
         'name': 'Niacinamide',
         'description':
-            'Mencerahkan kulit dan membantu mengurangi tampilan pori-pori.',
+            'Brightens the complexion and helps minimize the appearance of pores.',
       },
     ],
     'allIngredients':
         'Aqua, Glycerin, Niacinamide, Hyaluronic Acid, Dimethicone, Cetearyl Alcohol, Cetyl Alcohol, Ceramide NP, Ceramide AP, Ceramide EOP, Carbomer, Dimethicone, Behentrimonium Methosulfate, Sodium Lauroyl Lactylate, Cholesterol, Phenoxyethanol, Disodium EDTA, Dipotassium Phosphate, Xanthan Gum, Polysorbate 20, Ethylhexylglycerin.',
   },
   {
-    'image': 'assets/products/toner.jpg',
-    'name': 'Toner menyegarkan dengan kandungan alami.',
+    'image': 'assets/products/somebymi.jpeg',
+    'name': 'Some By Mi AHA·BHA·PHA Miracle Toner',
     'brand': 'Some By Mi',
     'category': 'Toner',
     'keyIngredients': [
       {
         'name': 'AHA/BHA',
-        'description': 'Mengangkat sel kulit mati dan membersihkan pori-pori.',
+        'description':
+            'Exfoliates dead skin cells and helps unclog pores for smoother skin.',
       },
       {
         'name': 'Tea Tree Extract',
-        'description': 'Membantu menenangkan kulit dan mengurangi kemerahan.',
+        'description':
+            'Soothes irritation and reduces redness for a clearer complexion.',
       },
     ],
     'allIngredients':
         'Water, Butylene Glycol, Dipropylene Glycol, Glycerin, Niacinamide, Melaleuca Alternifolia (Tea Tree) Leaf Extract, Polyglyceryl-10 Myristate, Polyglyceryl-10 Laurate, Salicylic Acid, Lactobionic Acid, Citric Acid, Sodium Citrate, 1,2-Hexanediol, Benzyl Glycol, Ethylhexylglycerin, Raspberry Ketone, Allantoin, Panthenol.',
   },
   {
-    'image': 'assets/products/moisturizer.jpg',
-    'name': 'Krim pelembap yang cocok untuk semua jenis kulit.',
+    'image': 'assets/products/cerave.jpg',
+    'name': 'CeraVe Moisturizing Cream',
     'brand': 'CeraVe',
     'category': 'Moisturizer',
     'keyIngredients': [
       {
         'name': 'Ceramides',
-        'description': 'Memperkuat skin barrier dan menjaga kelembapan kulit.',
+        'description':
+            'Strengthens the skin barrier and locks in essential moisture.',
       },
       {
         'name': 'Glycerin',
-        'description': 'Menarik dan mengunci kelembapan pada kulit.',
+        'description':
+            'Draws water into the skin to keep it soft and hydrated.',
       },
     ],
     'allIngredients':
         'Purified Water, Glycerin, Caprylic/Capric Triglyceride, Behentrimonium Methosulfate, Ceteareth-20, Cetearyl Alcohol, Ceramide 3, Ceramide 6-II, Ceramide 1, Phytosphingosine, Hyaluronic Acid, Cholesterol, Dimethicone, Polysorbate 20, Polyglyceryl-3 Diisostearate, Potassium Phosphate, Dipotassium Phosphate, Sodium Lauroyl Lactylate, Cetyl Alcohol, Disodium EDTA, Phytic Acid, Xanthan Gum, Carbomer, Tocopherol.',
   },
   {
-    'image': 'assets/products/toner.jpg',
-    'name': 'Toner untuk menyeimbangkan pH kulit.',
+    'image': 'assets/products/klairs.jpg',
+    'name': 'Klairs Supple Preparation Unscented Toner',
     'brand': 'Klairs',
     'category': 'Toner',
     'keyIngredients': [
       {
         'name': 'Centella Asiatica',
-        'description':
-            'Menenangkan kulit yang iritasi dan mempercepat penyembuhan.',
+        'description': 'Calms irritated skin and supports the healing process.',
       },
       {
         'name': 'Hyaluronic Acid',
-        'description': 'Memberikan hidrasi intensif untuk kulit lebih lembut.',
+        'description':
+            'Provides deep hydration, leaving the skin soft and supple.',
       },
     ],
     'allIngredients':

@@ -92,7 +92,7 @@ class _HomeState extends State<Home> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🔍 Search bar
+                  // Search bar
                   TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
@@ -116,7 +116,7 @@ class _HomeState extends State<Home> {
 
                   const SizedBox(height: 20),
 
-                  // 🏷️ Category selector
+                  // Category selector
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -137,7 +137,7 @@ class _HomeState extends State<Home> {
 
                   const SizedBox(height: 30),
 
-                  // 🧴 Product grid
+                  // Product grid
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
