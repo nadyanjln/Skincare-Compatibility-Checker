@@ -21,14 +21,12 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    // Reset providers saat halaman dibuka
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<FormValidationProvider>().reset();
       context.read<PasswordVisibilityProvider>().reset();
       context.read<LoadingProvider>().setLoading(false);
     });
 
-    // Listen to text changes dan update provider
     _emailController.addListener(() {
       context.read<FormValidationProvider>().setEmail(_emailController.text);
     });
@@ -65,9 +63,7 @@ class _LoginState extends State<Login> {
     }
 
     loadingProvider.setLoading(true);
-
     final success = await userProvider.login(email, password);
-
     loadingProvider.setLoading(false);
 
     if (!mounted) return;
@@ -93,24 +89,27 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xffF9FAFB),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
           onPressed: () {
+            FocusScope.of(context).unfocus();
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back, color: Colors.black),
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -258,33 +257,33 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
+
+                      const SizedBox(height: 32),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account? "),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/signup');
+                            },
+                            child: const Text(
+                              'Sign up',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don't have an account? "),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/signup');
-                    },
-                    child: const Text(
-                      'Sign up',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
