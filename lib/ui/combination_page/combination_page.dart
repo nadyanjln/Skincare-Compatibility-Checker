@@ -9,13 +9,8 @@ class CombinationPage extends StatelessWidget {
   const CombinationPage({super.key});
 
   void _handleCameraAction(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Camera feature will be available soon'),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    // Navigate to camera OCR page
+    Navigator.pushNamed(context, '/camera_ocr');
   }
 
   void _showClearAllDialog(BuildContext context) {

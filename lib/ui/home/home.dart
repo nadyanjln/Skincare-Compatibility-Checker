@@ -57,6 +57,12 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void _handleCameraSearch(BuildContext context) {
+    // Navigate to camera OCR page
+    print("Camera icon pressed!");
+    Navigator.pushNamed(context, '/camera_ocr');
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -94,11 +100,7 @@ class _HomeState extends State<Home> {
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.camera_alt),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Camera clicked')),
-                          );
-                        },
+                        onPressed: () => _handleCameraSearch(context),
                       ),
                       filled: true,
                       fillColor: Colors.white,

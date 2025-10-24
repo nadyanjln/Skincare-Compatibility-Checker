@@ -1,6 +1,7 @@
 import 'package:capstone/provider/home_provider.dart';
 import 'package:capstone/provider/user_provider.dart';
 import 'package:capstone/provider/wishlist_provider.dart';
+import 'package:capstone/ui/camera/camera.dart';
 import 'package:capstone/ui/combination_page/combination_page.dart';
 import 'package:capstone/provider/ingredients_provider.dart';
 import 'package:capstone/ui/detail_product/detail_product_screen.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
           '/ganti_email': (_) => const GantiEmail(),
           '/ganti_password': (_) => const ForgotPasswordPage(),
           '/wishlist': (_) => const WishlistPage(),
+          '/camera_ocr': (_) => const CameraOcrPage(),
         },
         theme: ThemeData(
           textTheme: GoogleFonts.plusJakartaSansTextTheme(),
