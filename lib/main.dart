@@ -11,11 +11,13 @@ import 'package:capstone/ui/login_regist/provider/form_validation.dart';
 import 'package:capstone/ui/login_regist/provider/loading_provider.dart';
 import 'package:capstone/ui/login_regist/provider/visibility_provider.dart';
 import 'package:capstone/ui/login_regist/signup.dart';
+import 'package:capstone/ui/onboarding/onboarding.dart';
 import 'package:capstone/ui/profile/ganti_email/ganti_email.dart';
 import 'package:capstone/ui/profile/ganti_nama/ganti_nama.dart';
 import 'package:capstone/ui/profile/ganti_password/ganti_password.dart';
 import 'package:capstone/ui/profile/profile.dart';
 import 'package:capstone/ui/profile/wishlist/wishlist.dart';
+import 'package:capstone/ui/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +48,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          '/': (_) => const Login(),
+          '/': (context) => const SplashScreen(),
+          '/onboarding': (context) => const OnboardingScreen(),
+          '/login': (_) => const Login(),
           '/signup': (_) => const RegisterPage(),
           '/forgotpw': (_) => const ForgotPassword(),
           '/home': (_) => const Home(),

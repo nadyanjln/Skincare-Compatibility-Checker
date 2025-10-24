@@ -14,12 +14,14 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
@@ -30,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final formProvider = context.read<FormValidationProvider>();
     final userProvider = context.read<UserProvider>();
 
-    final name = "No Name";
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -45,10 +47,8 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     try {
-      // Simulasi proses register (contoh: API call)
       await userProvider.register(name, email, password);
 
-      // Misalnya register berhasil
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Account created successfully!'),
@@ -56,12 +56,10 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
 
-      // Setelah berhasil, pindah ke halaman login
       Future.delayed(const Duration(milliseconds: 800), () {
-        Navigator.pushReplacementNamed(context, '/');
+        Navigator.pushReplacementNamed(context, '/login');
       });
     } catch (e) {
-      // Jika gagal register
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registration failed. Please try again.'),
@@ -100,6 +98,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
+
+                    // NAME
+                    CustomTextField(
+                      label: 'Full Name',
+                      hintText: 'John Doe',
+                      prefixIcon: Icons.person_outline,
+                      controller: _nameController,
+                      onChanged: (value) {
+                        context.read<FormValidationProvider>().setName(value);
+                      },
+                    ),
+
+                    const SizedBox(height: 20),
 
                     // EMAIL
                     CustomTextField(
@@ -161,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 8),
 
-                    //  ERROR PASSWORD TIDAK SAMA
+                    // PASSWORD MISMATCH WARNING
                     Consumer<FormValidationProvider>(
                       builder: (context, formProvider, child) {
                         if (!formProvider.doPasswordsMatch &&
@@ -249,7 +260,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text("Already have an account? "),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, '/');
+                      Navigator.pushReplacementNamed(context, '/login');
                     },
                     child: const Text(
                       'Log in',
