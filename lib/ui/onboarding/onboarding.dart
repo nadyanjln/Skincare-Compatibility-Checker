@@ -26,7 +26,7 @@ class OnboardingScreen extends StatelessWidget {
       image: "assets/onboarding3.png",
       title: "Explore the app",
       description:
-          "Now your finances are in one place and always under control",
+          "Discover and compare skincare ingredients to find what’s best for your skin type.",
       isLastPage: true,
     ),
   ];

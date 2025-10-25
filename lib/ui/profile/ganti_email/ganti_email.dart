@@ -42,7 +42,7 @@ class _GantiEmailState extends State<GantiEmail> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
-      resizeToAvoidBottomInset: true, // ✅ penting untuk menghindari overflow
+      resizeToAvoidBottomInset: false, 
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
