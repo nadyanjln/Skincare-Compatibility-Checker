@@ -18,6 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   void _addToLab(BuildContext context, Map<String, dynamic> product) {
     final provider = context.read<IngredientsProvider>();
@@ -74,7 +75,7 @@ class _HomeState extends State<Home> {
     return Consumer2<HomeProvider, WishlistProvider>(
       builder: (context, homeProvider, wishlistProvider, child) {
         // Filter products by category
-        final filteredProducts = homeProvider.selectedCategoryIndex == 0
+        var filteredProducts = homeProvider.selectedCategoryIndex == 0
             ? products
             : products
                   .where(
@@ -83,6 +84,16 @@ class _HomeState extends State<Home> {
                         categories[homeProvider.selectedCategoryIndex]['label'],
                   )
                   .toList();
+
+        // Filter by search query
+        if (_searchQuery.isNotEmpty) {
+          filteredProducts = filteredProducts.where((product) {
+            final name = product['name'].toString().toLowerCase();
+            final brand = product['brand'].toString().toLowerCase();
+            final query = _searchQuery.toLowerCase();
+            return name.contains(query) || brand.contains(query);
+          }).toList();
+        }
 
         return Scaffold(
           backgroundColor: const Color(0xffF9FAFB),
@@ -95,13 +106,28 @@ class _HomeState extends State<Home> {
                   // Search bar
                   TextField(
                     controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       hintText: 'Search',
                       prefixIcon: const Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.camera_alt),
-                        onPressed: () => _handleCameraSearch(context),
-                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  _searchController.clear();
+                                  _searchQuery = '';
+                                });
+                              },
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.camera_alt),
+                              onPressed: () => _handleCameraSearch(context),
+                            ),
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(
@@ -137,53 +163,87 @@ class _HomeState extends State<Home> {
 
                   const SizedBox(height: 30),
 
-                  // Product grid
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 0.55,
+                  // Product grid or empty state
+                  filteredProducts.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.search_off,
+                                  size: 64,
+                                  color: Colors.grey[400],
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No products found',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Try a different search term',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.55,
+                              ),
+                          itemCount: filteredProducts.length,
+                          itemBuilder: (context, index) {
+                            final product = filteredProducts[index];
+
+                            // Buat ProductIngredient object untuk wishlist
+                            final productIngredient = ProductIngredient(
+                              name: product['name'],
+                              brand: product['brand'],
+                              image: product['image'],
+                              ingredients: product['ingredients'] ?? [],
+                            );
+
+                            final isWishlisted = wishlistProvider.isInWishlist(
+                              product['name'],
+                              product['brand'],
+                            );
+
+                            return ProductCard(
+                              image: product['image'],
+                              name: product['name'],
+                              brand: product['brand'],
+                              isWishlisted: isWishlisted,
+                              onWishlistToggle: () {
+                                wishlistProvider.toggleWishlist(
+                                  productIngredient,
+                                );
+                              },
+                              onAdd: () => _addToLab(context, product),
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/product_detail',
+                                  arguments: product,
+                                );
+                              },
+                            );
+                          },
                         ),
-                    itemCount: filteredProducts.length,
-                    itemBuilder: (context, index) {
-                      final product = filteredProducts[index];
-
-                      // Buat ProductIngredient object untuk wishlist
-                      final productIngredient = ProductIngredient(
-                        name: product['name'],
-                        brand: product['brand'],
-                        image: product['image'],
-                        ingredients: product['ingredients'] ?? [],
-                      );
-
-                      final isWishlisted = wishlistProvider.isInWishlist(
-                        product['name'],
-                        product['brand'],
-                      );
-
-                      return ProductCard(
-                        image: product['image'],
-                        name: product['name'],
-                        brand: product['brand'],
-                        isWishlisted: isWishlisted,
-                        onWishlistToggle: () {
-                          wishlistProvider.toggleWishlist(productIngredient);
-                        },
-                        onAdd: () => _addToLab(context, product),
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/product_detail',
-                            arguments: product,
-                          );
-                        },
-                      );
-                    },
-                  ),
                 ],
               ),
             ),
