@@ -89,16 +89,16 @@ flutter run
 
 <div align="center">
   <img src="screenshots/splash.png" width="200" alt="Splash Screen"/>
-  <img src="screenshots/onboarding.png" width="200" alt="Onboarding"/>
-  <img src="screenshots/home.png" width="200" alt="Home Screen"/>
-  <img src="screenshots/product_detail.png" width="200" alt="Product Detail"/>
+  <img src="screenshots/onboarding1.png" width="200" alt="Onboarding"/>
+  <img src="screenshots/onboarding2.png" width="200" alt="Home Screen"/>
+  <img src="screenshots/onboarding3.png" width="200" alt="Product Detail"/>
 </div>
 
 <div align="center">
-  <img src="screenshots/camera_ocr.png" width="200" alt="Camera OCR"/>
-  <img src="screenshots/combination.png" width="200" alt="Combination Checker"/>
-  <img src="screenshots/profile.png" width="200" alt="Profile"/>
-  <img src="screenshots/wishlist.png" width="200" alt="Wishlist"/>
+  <img src="screenshots/home.png" width="200" alt="Camera OCR"/>
+  <img src="screenshots/product_detail.png" width="200" alt="Combination Checker"/>
+  <img src="screenshots/camera_ocr.png" width="200" alt="Profile"/>
+  <img src="screenshots/combine.png" width="200" alt="Wishlist"/>
 </div>
 
 ## Dependencies
