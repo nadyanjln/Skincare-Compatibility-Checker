@@ -11,10 +11,6 @@ A Flutter application for analyzing skincare product ingredients and checking co
 - 📊 **Product Categories**: Browse products by categories (All, Serum, Toner, Moisturizer, etc.)
 - 📱 **User Profile**: Manage user account and preferences
 
-## Screenshots
-
-*Add your app screenshots here*
-
 ## Tech Stack
 
 - **Framework**: Flutter
@@ -71,7 +67,7 @@ lib/
 
 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/nadyanjln/Skincare-Compatibility-Checker.git capstone
 cd capstone
 ```
 
@@ -116,7 +112,6 @@ dependencies:
   
   # HTTP & API
   http: ^1.1.0
-  dio: ^5.4.0
   
   # Image Processing & OCR
   image_picker: ^1.0.4
@@ -127,7 +122,7 @@ dependencies:
   shared_preferences: ^2.2.2
   
   # Navigation
-  go_router: ^13.0.0
+  provider: ^6.1.5+1
   
   # Utils
   intl: ^0.18.1
