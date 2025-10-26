@@ -101,6 +101,8 @@ class CombinationPage extends StatelessWidget {
         behavior: SnackBarBehavior.floating,
       ),
     );
+
+    Navigator.pushNamed(context, '/result');
   }
 
   @override

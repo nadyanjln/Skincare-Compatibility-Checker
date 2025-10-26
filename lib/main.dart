@@ -18,6 +18,7 @@ import 'package:capstone/ui/profile/ganti_nama/ganti_nama.dart';
 import 'package:capstone/ui/profile/ganti_password/ganti_password.dart';
 import 'package:capstone/ui/profile/profile.dart';
 import 'package:capstone/ui/profile/wishlist/wishlist.dart';
+import 'package:capstone/ui/result/result.dart';
 import 'package:capstone/ui/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
           '/ganti_password': (_) => const ForgotPasswordPage(),
           '/wishlist': (_) => const WishlistPage(),
           '/camera_ocr': (_) => const CameraOcrPage(),
+          '/result': (_) => const Result(),
         },
         theme: ThemeData(
           textTheme: GoogleFonts.plusJakartaSansTextTheme(),
