@@ -36,6 +36,7 @@ class OnboardingScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => OnboardingProvider(),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
