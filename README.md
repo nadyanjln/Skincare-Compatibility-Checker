@@ -88,7 +88,7 @@ flutter run
 ## Screenshots
 
 <div align="center">
-  <img src="screenshots/splash.jpgscreenshoots/splash.jpg" width="200" alt="Splash Screen"/>
+  <img src="screenshots/splash.jpg" width="200" alt="Splash Screen"/>
   <img src="screenshots/onboarding1.jpg" width="200" alt="Onboarding"/>
   <img src="screenshots/onboarding2.jpg" width="200" alt="Home Screen"/>
   <img src="screenshots/onboarding3.jpg" width="200" alt="Product Detail"/>
