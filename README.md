@@ -11,6 +11,9 @@ A Flutter application for analyzing skincare product ingredients and checking co
 - 📊 **Product Categories**: Browse products by categories (All, Serum, Toner, Moisturizer, etc.)
 - 📱 **User Profile**: Manage user account and preferences
 
+## Screenshots
+
+*Add your app screenshots here*
 
 ## Tech Stack
 
@@ -82,15 +85,68 @@ flutter pub get
 flutter run
 ```
 
+## Screenshots
+
+<div align="center">
+  <img src="screenshots/splash.png" width="200" alt="Splash Screen"/>
+  <img src="screenshots/onboarding.png" width="200" alt="Onboarding"/>
+  <img src="screenshots/home.png" width="200" alt="Home Screen"/>
+  <img src="screenshots/product_detail.png" width="200" alt="Product Detail"/>
+</div>
+
+<div align="center">
+  <img src="screenshots/camera_ocr.png" width="200" alt="Camera OCR"/>
+  <img src="screenshots/combination.png" width="200" alt="Combination Checker"/>
+  <img src="screenshots/profile.png" width="200" alt="Profile"/>
+  <img src="screenshots/wishlist.png" width="200" alt="Wishlist"/>
+</div>
+
 ## Dependencies
 
 ```yaml
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.0
-  # Add other dependencies here
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # UI Components
+  cupertino_icons: ^1.0.2
+  
+  # HTTP & API
+  http: ^1.1.0
+  dio: ^5.4.0
+  
+  # Image Processing & OCR
+  image_picker: ^1.0.4
+  camera: ^0.10.5+5
+  google_mlkit_text_recognition: ^0.11.0
+  
+  # Local Storage
+  shared_preferences: ^2.2.2
+  
+  # Navigation
+  go_router: ^13.0.0
+  
+  # Utils
+  intl: ^0.18.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
 ```
+
+### Key Dependencies Explained
+
+- **provider**: State management solution
+- **camera**: Access device camera for OCR
+- **google_mlkit_text_recognition**: Extract text from images
+- **image_picker**: Pick images from gallery
+- **shared_preferences**: Store user preferences locally
+- **http/dio**: HTTP client for API requests
+- **go_router**: Advanced navigation management
 
 ## Features in Detail
 
