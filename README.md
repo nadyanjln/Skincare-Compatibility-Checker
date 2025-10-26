@@ -1,4 +1,4 @@
-# Capstone - Skincare Product Analysis App
+# MatchLab - Skincare Product Analysis App
 
 A Flutter application for analyzing skincare product ingredients and checking compatibility between products.
 
